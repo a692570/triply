@@ -1,6 +1,6 @@
 # ✈️ triply
 
-**AI-powered travel brief generator.** One command gives you flights, hotels, ground transport, weather, travel advisory, local events, restaurant picks, and a day-by-day itinerary — pulled from live data, rendered in your terminal or exported as a clean HTML report.
+**AI-powered travel brief generator.** One command gives you flights, hotels, ground transport, weather, travel advisory, local events, restaurant picks, and a day-by-day itinerary: pulled from live data, rendered in your terminal or exported as a clean HTML report.
 
 ```bash
 python triply.py --from SFO --to LAS --depart 2026-06-05 --return 2026-06-07 --adults 2 --no-car --prefs "no casino"
@@ -12,16 +12,16 @@ python triply.py --from SFO --to LAS --depart 2026-06-05 --return 2026-06-07 --a
 
 ## Features
 
-- **Flights** — live prices from Google Flights (outbound + return)
-- **Hotels** — real-time rates from Google Hotels
-- **Ground transport** — transit and driving directions airport to city
-- **Weather** — current conditions at destination
-- **Travel advisory** — US State Dept safety level for international trips
-- **Events** — what's happening at your destination during your dates
-- **Restaurants** — top picks with booking lead times
-- **Itinerary** — day-by-day schedule built around your arrival/departure
-- **Budget** — total cost rollup across all components
-- **HTML export** — clean dark-mode report you can save, share, or print
+- **Flights**: live prices from Google Flights (outbound + return)
+- **Hotels**: real-time rates from Google Hotels
+- **Ground transport**: transit and driving directions airport to city
+- **Weather**: current conditions at destination
+- **Travel advisory**: US State Dept safety level for international trips
+- **Events**: what's happening at your destination during your dates
+- **Restaurants**: top picks with booking lead times
+- **Itinerary**: day-by-day schedule built around your arrival/departure
+- **Budget**: total cost rollup across all components
+- **HTML export**: clean dark-mode report you can save, share, or print
 
 ---
 
@@ -58,7 +58,7 @@ cd triply
 # Install Python dependencies
 pip install -r requirements.txt
 
-# Set up environment (optional — only needed for Maps + Tavily)
+# Set up environment (optional: only needed for Maps + Tavily)
 cp .env.example .env
 # Edit .env and fill in your API keys
 ```
@@ -98,7 +98,7 @@ python triply.py --from SFO --to NRT \
 | `--depart` | Departure date (YYYY-MM-DD) | required |
 | `--return` | Return date (YYYY-MM-DD) | required |
 | `--adults` | Number of adults | 1 |
-| `--no-car` | No rental car — plan around transit/Uber | false |
+| `--no-car` | No rental car: plan around transit/Uber | false |
 | `--prefs` | Freeform preferences/exclusions | "" |
 | `--budget` | Total budget in USD | none |
 | `--html` | Export HTML report to this path | none |
@@ -111,7 +111,7 @@ python triply.py --from SFO --to NRT \
 1. Go to [console.cloud.google.com](https://console.cloud.google.com/apis/credentials)
 2. Create an API key, enable Directions API + Geocoding API
 3. Add to `.env` as `GOOGLE_MAPS_API_KEY`
-4. Free $200/month credit — well beyond personal use limits
+4. Free $200/month credit: well beyond personal use limits
 
 **Tavily** (events + restaurants):
 1. Sign up at [app.tavily.com](https://app.tavily.com)
@@ -124,8 +124,8 @@ python triply.py --from SFO --to NRT \
 ## Examples
 
 See [`examples/`](examples/) for full sample outputs:
-- [`vegas_weekend.md`](examples/vegas_weekend.md) — SFO to Las Vegas, weekend trip, no car
-- [`tulum_week.md`](examples/tulum_week.md) — SFO to Tulum via Cancun, week-long trip
+- [`vegas_weekend.md`](examples/vegas_weekend.md): SFO to Las Vegas, weekend trip, no car
+- [`tulum_week.md`](examples/tulum_week.md): SFO to Tulum via Cancun, week-long trip
 
 ---
 
