@@ -10,7 +10,7 @@ def _tavily(query: str, max_results: int = 5) -> list:
             capture_output=True, text=True, timeout=30
         )
         data = json.loads(result.stdout)
-        return [{"title": r["title"], "snippet": r["content"][:200]} for r in data.get("results", [])]
+        return [{"title": r["title"], "snippet": r["content"][:200], "url": r.get("url", "")} for r in data.get("results", [])]
     except Exception:
         return []
 

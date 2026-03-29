@@ -95,10 +95,11 @@ def render_terminal(data: dict):
 def render_html(data: dict, output_path: str):
     try:
         from jinja2 import Environment, FileSystemLoader
+        from datetime import datetime
         template_dir = os.path.join(os.path.dirname(__file__))
         env = Environment(loader=FileSystemLoader(template_dir))
         template = env.get_template("template.html")
-        html = template.render(**data)
+        html = template.render(**data, generated_at=datetime.now().strftime("%B %d, %Y at %H:%M"))
         with open(output_path, "w") as f:
             f.write(html)
     except Exception as e:

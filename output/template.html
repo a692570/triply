@@ -3,81 +3,130 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>triply — {{ trip.destination }} Trip Brief</title>
+<title>triply: {{ trip.destination }} Trip Brief</title>
 <style>
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-  body { background: #0f1117; color: #e5e5e5; font-family: system-ui, -apple-system, sans-serif; font-size: 15px; line-height: 1.6; padding: 32px 16px; }
+  body { background: #08090c; color: #f1f5f9; font-family: system-ui, -apple-system, 'Segoe UI', sans-serif; font-size: 15px; line-height: 1.6; padding: 40px 16px; }
   .container { max-width: 900px; margin: 0 auto; }
-  .header { margin-bottom: 32px; border-bottom: 1px solid #1e2130; padding-bottom: 24px; }
-  .header h1 { font-size: 2rem; font-weight: 700; color: #fff; letter-spacing: -0.02em; }
-  .header h1 span { color: #7c9ef5; }
-  .header .meta { color: #888; margin-top: 6px; font-size: 0.9rem; }
-  .card { background: #161b2e; border: 1px solid #1e2130; border-radius: 10px; padding: 24px; margin-bottom: 16px; }
-  .card-title { font-size: 0.75rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: #7c9ef5; margin-bottom: 16px; }
-  table { width: 100%; border-collapse: collapse; font-size: 0.9rem; }
-  th { background: #1e2130; color: #888; font-weight: 600; text-align: left; padding: 8px 12px; font-size: 0.75rem; letter-spacing: 0.05em; text-transform: uppercase; }
-  td { padding: 10px 12px; border-bottom: 1px solid #1e2130; }
+
+  /* Header */
+  .header { margin-bottom: 36px; padding-bottom: 28px; border-bottom: 1px solid rgba(255,255,255,0.06); }
+  .header h1 { font-size: 2.2rem; font-weight: 800; color: #f1f5f9; letter-spacing: -0.03em; margin-bottom: 12px; }
+  .header h1 .dest { color: #5c6ef5; background: linear-gradient(90deg, #5c6ef5, #818cf8); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+  .meta-pills { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; }
+  .pill { display: inline-block; padding: 3px 12px; border-radius: 99px; font-size: 0.78rem; font-weight: 500; border: 1px solid rgba(255,255,255,0.1); color: #94a3b8; background: rgba(255,255,255,0.03); }
+
+  /* Cards */
+  .card { background: linear-gradient(135deg, rgba(92,110,245,0.03), transparent); background-color: #0f1117; border: 1px solid rgba(255,255,255,0.06); border-radius: 12px; padding: 28px; margin-bottom: 14px; box-shadow: 0 1px 3px rgba(0,0,0,0.4), 0 0 0 1px rgba(255,255,255,0.03); }
+  .card-title { font-size: 0.7rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: #5c6ef5; margin-bottom: 18px; }
+
+  /* Tables */
+  table { width: 100%; border-collapse: collapse; font-size: 0.88rem; }
+  th { background: transparent; color: #64748b; font-weight: 600; text-align: left; padding: 8px 12px; font-size: 0.72rem; letter-spacing: 0.08em; text-transform: uppercase; border-bottom: 1px solid rgba(255,255,255,0.06); }
+  td { padding: 11px 12px; border-bottom: 1px solid rgba(255,255,255,0.04); color: #cbd5e1; }
   tr:last-child td { border-bottom: none; }
-  tr:hover td { background: #1e2130; }
-  .price { color: #4ade80; font-weight: 700; }
-  .nonstop { color: #4ade80; font-size: 0.8rem; }
-  .stop { color: #f59e0b; font-size: 0.8rem; }
-  .rating { color: #f59e0b; }
-  .badge { display: inline-block; padding: 4px 12px; border-radius: 20px; font-size: 0.85rem; font-weight: 600; }
-  .badge-1 { background: #14532d; color: #4ade80; }
-  .badge-2 { background: #713f12; color: #fbbf24; }
-  .badge-3 { background: #7c2d12; color: #fb923c; }
-  .badge-4 { background: #450a0a; color: #f87171; }
-  .transport-row { display: flex; gap: 24px; flex-wrap: wrap; }
-  .transport-block { flex: 1; min-width: 200px; }
-  .transport-block h4 { color: #888; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 6px; }
-  .transport-block .duration { font-size: 1.2rem; font-weight: 700; color: #fff; }
-  .transport-block .steps { color: #888; font-size: 0.8rem; margin-top: 6px; }
-  .transport-block .steps li { list-style: none; padding: 2px 0; }
-  .transport-block .steps li::before { content: "→ "; color: #7c9ef5; }
-  .weather-text { font-size: 1.1rem; color: #e5e5e5; }
-  .events-list, .restaurants-list { list-style: none; }
-  .events-list li, .restaurants-list li { padding: 8px 0; border-bottom: 1px solid #1e2130; font-size: 0.9rem; }
-  .events-list li:last-child, .restaurants-list li:last-child { border-bottom: none; }
-  .events-list li::before { content: "🎟 "; }
-  .restaurants-list li::before { content: "🍽 "; }
-  /* Timeline */
-  .timeline { position: relative; padding-left: 48px; }
-  .timeline::before { content: ""; position: absolute; left: 16px; top: 8px; bottom: 8px; width: 2px; background: #1e2130; }
-  .timeline-day { position: relative; margin-bottom: 28px; }
-  .timeline-day::before { content: attr(data-day); position: absolute; left: -48px; width: 32px; height: 32px; background: #7c9ef5; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.75rem; font-weight: 700; color: #0f1117; line-height: 32px; text-align: center; }
-  .day-header { margin-bottom: 10px; }
-  .day-date { font-size: 0.8rem; color: #888; }
-  .day-theme { font-weight: 700; color: #fff; font-size: 1rem; }
-  .activity { padding: 6px 0; border-bottom: 1px solid #1e2130; }
+  tr:hover td { background: rgba(255,255,255,0.02); }
+  tr:nth-child(even) td { background: rgba(255,255,255,0.01); }
+  tr:nth-child(even):hover td { background: rgba(255,255,255,0.03); }
+
+  /* Price + badges */
+  .price { color: #22c55e; font-weight: 700; font-size: 0.95rem; }
+  .badge { display: inline-block; padding: 2px 9px; border-radius: 99px; font-size: 0.7rem; font-weight: 600; }
+  .badge-nonstop { background: #052e16; color: #22c55e; }
+  .badge-stop { background: #431407; color: #fb923c; }
+  .rating { color: #f59e0b; font-weight: 600; }
+
+  /* Links */
+  a { color: #818cf8; text-decoration: none; }
+  a:hover { color: #a5b4fc; text-decoration: underline; }
+  .action-link { display: inline-block; padding: 2px 10px; background: rgba(92,110,245,0.12); border: 1px solid rgba(92,110,245,0.25); border-radius: 99px; color: #818cf8; font-size: 0.7rem; font-weight: 600; text-decoration: none; margin-left: 8px; white-space: nowrap; }
+  .action-link:hover { background: rgba(92,110,245,0.22); text-decoration: none; }
+
+  /* Transport */
+  .transport-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+  .transport-block h4 { font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.1em; color: #64748b; font-weight: 600; margin-bottom: 6px; }
+  .transport-block .dur { font-size: 1.2rem; font-weight: 700; color: #f1f5f9; }
+  .transport-block .dist { font-size: 0.82rem; color: #64748b; margin-top: 2px; }
+  .transport-block ul { list-style: none; margin-top: 8px; }
+  .transport-block ul li { font-size: 0.82rem; color: #94a3b8; padding: 2px 0; }
+  .transport-block ul li::before { content: ""; color: #5c6ef5; margin-right: 6px; }
+
+  /* Weather */
+  .weather-text { font-size: 1rem; color: #e2e8f0; }
+
+  /* Advisory */
+  .advisory-banner { border-radius: 8px; padding: 14px 18px; display: flex; align-items: center; gap: 12px; }
+  .advisory-1 { background: #052e16; border-left: 4px solid #22c55e; }
+  .advisory-2 { background: #1c1007; border-left: 4px solid #f59e0b; }
+  .advisory-3 { background: #1c0a07; border-left: 4px solid #f97316; }
+  .advisory-4 { background: #1c0404; border-left: 4px solid #ef4444; }
+  .advisory-emoji { font-size: 1.2rem; }
+  .advisory-text { font-size: 0.88rem; color: #e2e8f0; }
+  .advisory-meta { font-size: 0.75rem; color: #64748b; margin-top: 3px; }
+
+  /* Events + Restaurants */
+  .list-items { list-style: none; }
+  .list-items li { padding: 10px 0; border-bottom: 1px solid rgba(255,255,255,0.05); font-size: 0.88rem; color: #cbd5e1; display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; }
+  .list-items li:last-child { border-bottom: none; }
+  .list-items li .item-title { flex: 1; }
+
+  /* Itinerary timeline */
+  .timeline { position: relative; padding-left: 52px; }
+  .timeline::before { content: ""; position: absolute; left: 18px; top: 18px; bottom: 18px; width: 1px; background: rgba(92,110,245,0.25); }
+  .timeline-day { position: relative; margin-bottom: 32px; }
+  .day-circle { position: absolute; left: -52px; width: 36px; height: 36px; background: linear-gradient(135deg, #5c6ef5, #818cf8); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.72rem; font-weight: 700; color: #fff; box-shadow: 0 0 0 3px #08090c, 0 0 0 4px rgba(92,110,245,0.3); }
+  .day-header { margin-bottom: 12px; }
+  .day-date { font-size: 0.75rem; color: #64748b; font-weight: 500; margin-bottom: 2px; }
+  .day-theme { font-size: 0.95rem; font-weight: 600; color: #e2e8f0; }
+  .activity { padding: 8px 0; border-bottom: 1px solid rgba(255,255,255,0.04); }
   .activity:last-child { border-bottom: none; }
-  .activity-time { font-size: 0.75rem; color: #7c9ef5; font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em; }
-  .activity-name { font-size: 0.9rem; color: #e5e5e5; }
-  .activity-meta { font-size: 0.8rem; color: #888; }
+  .activity-time { font-size: 0.68rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: #5c6ef5; margin-bottom: 2px; }
+  .activity-name { font-size: 0.88rem; color: #e2e8f0; }
+  .activity-dur { color: #64748b; font-size: 0.82rem; }
+  .activity-notes { font-size: 0.8rem; color: #64748b; margin-top: 2px; }
+
   /* Budget */
-  .budget-table td:last-child { text-align: right; font-weight: 600; }
-  .budget-total td { font-size: 1rem; font-weight: 700; color: #4ade80; border-top: 2px solid #1e2130; }
+  .budget-rows { display: flex; flex-direction: column; gap: 0; }
+  .budget-row { display: flex; justify-content: space-between; align-items: center; padding: 10px 0; border-bottom: 1px solid rgba(255,255,255,0.05); font-size: 0.88rem; }
+  .budget-row:last-child { border-bottom: none; }
+  .budget-row.total { padding-top: 14px; border-top: 1px solid rgba(255,255,255,0.1); font-size: 1rem; font-weight: 700; color: #22c55e; }
+  .budget-row .label { color: #94a3b8; }
+  .budget-row .label small { display: block; font-size: 0.75rem; color: #64748b; }
+  .budget-row .amount { font-weight: 600; color: #f1f5f9; }
+  .budget-row.total .amount { color: #22c55e; }
+
+  /* Footer */
+  .footer { text-align: center; color: #334155; font-size: 0.75rem; margin-top: 36px; padding-top: 20px; border-top: 1px solid rgba(255,255,255,0.04); }
+  .footer a { color: #475569; }
+
   /* Responsive */
-  @media (max-width: 600px) {
-    body { padding: 16px 12px; }
-    .card { padding: 16px; }
-    table { font-size: 0.8rem; }
-    th, td { padding: 6px 8px; }
-    .transport-row { flex-direction: column; gap: 16px; }
-    .header h1 { font-size: 1.4rem; }
-    .timeline { padding-left: 40px; }
-    .timeline-day::before { left: -40px; width: 28px; height: 28px; font-size: 0.7rem; line-height: 28px; }
+  @media (max-width: 640px) {
+    body { padding: 20px 12px; }
+    .card { padding: 18px; }
+    .header h1 { font-size: 1.6rem; }
+    .transport-grid { grid-template-columns: 1fr; gap: 16px; }
+    .timeline { padding-left: 44px; }
+    .day-circle { left: -44px; width: 30px; height: 30px; font-size: 0.65rem; }
+    table { display: block; overflow-x: auto; -webkit-overflow-scrolling: touch; }
+    .list-items li { flex-direction: column; gap: 6px; }
   }
+
   /* Print */
   @media print {
     body { background: #fff; color: #000; padding: 0; }
-    .card { background: #fff; border: 1px solid #ddd; box-shadow: none; }
-    .card-title { color: #333; }
-    table th { background: #f5f5f5; color: #333; }
+    .card { background: #fff; border: 1px solid #ddd; box-shadow: none; page-break-inside: avoid; }
+    .card-title { color: #3b5bdb; }
+    th { background: #f5f5f5; color: #444; }
+    td { color: #222; }
     .price { color: #16a34a; }
-    .header h1 span { color: #3b5bdb; }
+    .badge-nonstop { background: #dcfce7; color: #166534; }
+    .badge-stop { background: #fef3c7; color: #92400e; }
+    .header h1 .dest { -webkit-text-fill-color: #3b5bdb; color: #3b5bdb; }
     .timeline::before { background: #ddd; }
-    .timeline-day::before { background: #3b5bdb; color: #fff; }
+    .day-circle { background: #3b5bdb; box-shadow: none; }
+    .footer { color: #999; }
+    a { color: #3b5bdb; }
+    .action-link { border-color: #3b5bdb; color: #3b5bdb; background: transparent; }
   }
 </style>
 </head>
@@ -85,16 +134,21 @@
 <div class="container">
 
   <div class="header">
-    <h1>✈️ <span>{{ trip.destination }}</span> Trip Brief</h1>
-    <div class="meta">{{ trip.origin }} → {{ trip.destination }} &nbsp;·&nbsp; {{ trip.depart_date }} to {{ trip.return_date }} &nbsp;·&nbsp; {{ trip.adults }} adult{% if trip.adults != 1 %}s{% endif %}{% if trip.prefs %} &nbsp;·&nbsp; {{ trip.prefs }}{% endif %}</div>
+    <h1>Trip Brief: <span class="dest">{{ trip.destination }}</span></h1>
+    <div class="meta-pills">
+      <span class="pill">From {{ trip.origin }}</span>
+      <span class="pill">{{ trip.depart_date }} to {{ trip.return_date }}</span>
+      <span class="pill">{{ trip.adults }} adult{% if trip.adults != 1 %}s{% endif %}</span>
+      {% if trip.no_car %}<span class="pill">No car</span>{% endif %}
+      {% if trip.prefs %}<span class="pill">{{ trip.prefs }}</span>{% endif %}
+    </div>
   </div>
 
-  <!-- OUTBOUND FLIGHTS -->
   {% if outbound_flights %}
   <div class="card">
-    <div class="card-title">✈️ Outbound Flights &mdash; {{ trip.origin }} → {{ trip.destination }} on {{ trip.depart_date }}</div>
+    <div class="card-title">Outbound Flights: {{ trip.origin }} to {{ trip.destination }}, {{ trip.depart_date }}</div>
     <table>
-      <thead><tr><th>Price</th><th>Airline</th><th>Dep</th><th>Arr</th><th>Stops</th><th>Duration</th></tr></thead>
+      <thead><tr><th>Price</th><th>Airline</th><th>Dep</th><th>Arr</th><th>Stops</th><th>Duration</th><th></th></tr></thead>
       <tbody>
         {% for f in outbound_flights[:6] %}
         <tr>
@@ -102,8 +156,9 @@
           <td>{{ f.airline }}</td>
           <td>{{ f.dep_time }}</td>
           <td>{{ f.arr_time }}</td>
-          <td><span class="{{ 'nonstop' if f.stops == 0 else 'stop' }}">{{ 'nonstop' if f.stops == 0 else f.stops ~ ' stop' }}</span></td>
+          <td><span class="badge {{ 'badge-nonstop' if f.stops == 0 else 'badge-stop' }}">{{ 'nonstop' if f.stops == 0 else f.stops|string + ' stop' }}</span></td>
           <td>{{ f.duration }}</td>
+          <td><a class="action-link" href="https://www.google.com/travel/flights?q=flights+from+{{ trip.origin }}+to+{{ trip.destination }}+on+{{ trip.depart_date }}" target="_blank" rel="noopener">Book</a></td>
         </tr>
         {% endfor %}
       </tbody>
@@ -111,12 +166,11 @@
   </div>
   {% endif %}
 
-  <!-- RETURN FLIGHTS -->
   {% if inbound_flights %}
   <div class="card">
-    <div class="card-title">✈️ Return Flights &mdash; {{ trip.destination }} → {{ trip.origin }} on {{ trip.return_date }}</div>
+    <div class="card-title">Return Flights: {{ trip.destination }} to {{ trip.origin }}, {{ trip.return_date }}</div>
     <table>
-      <thead><tr><th>Price</th><th>Airline</th><th>Dep</th><th>Arr</th><th>Stops</th><th>Duration</th></tr></thead>
+      <thead><tr><th>Price</th><th>Airline</th><th>Dep</th><th>Arr</th><th>Stops</th><th>Duration</th><th></th></tr></thead>
       <tbody>
         {% for f in inbound_flights[:6] %}
         <tr>
@@ -124,8 +178,9 @@
           <td>{{ f.airline }}</td>
           <td>{{ f.dep_time }}</td>
           <td>{{ f.arr_time }}</td>
-          <td><span class="{{ 'nonstop' if f.stops == 0 else 'stop' }}">{{ 'nonstop' if f.stops == 0 else f.stops ~ ' stop' }}</span></td>
+          <td><span class="badge {{ 'badge-nonstop' if f.stops == 0 else 'badge-stop' }}">{{ 'nonstop' if f.stops == 0 else f.stops|string + ' stop' }}</span></td>
           <td>{{ f.duration }}</td>
+          <td><a class="action-link" href="https://www.google.com/travel/flights?q=flights+from+{{ trip.destination }}+to+{{ trip.origin }}+on+{{ trip.return_date }}" target="_blank" rel="noopener">Book</a></td>
         </tr>
         {% endfor %}
       </tbody>
@@ -133,18 +188,18 @@
   </div>
   {% endif %}
 
-  <!-- HOTELS -->
   {% if hotels %}
   <div class="card">
-    <div class="card-title">🏨 Hotels in {{ trip.destination }}</div>
+    <div class="card-title">Hotels in {{ trip.destination }}</div>
     <table>
-      <thead><tr><th>Price/night</th><th>Rating</th><th>Hotel</th></tr></thead>
+      <thead><tr><th>Price/night</th><th>Rating</th><th>Hotel</th><th></th></tr></thead>
       <tbody>
         {% for h in hotels[:6] %}
         <tr>
           <td class="price">${{ h.price_per_night }}</td>
           <td class="rating">{% if h.rating %}{{ h.rating }}★{% else %}N/A{% endif %}</td>
-          <td>{{ h.name }}</td>
+          <td>{% if h.url %}<a href="{{ h.url }}" target="_blank" rel="noopener">{{ h.name }}</a>{% else %}{{ h.name }}{% endif %}</td>
+          <td>{% if h.url %}<a class="action-link" href="{{ h.url }}" target="_blank" rel="noopener">View</a>{% endif %}</td>
         </tr>
         {% endfor %}
       </tbody>
@@ -152,69 +207,76 @@
   </div>
   {% endif %}
 
-  <!-- TRANSPORT -->
   {% if transport %}
   <div class="card">
-    <div class="card-title">🚗 Ground Transport &mdash; Airport → City</div>
-    <div class="transport-row">
+    <div class="card-title">Ground Transport: Airport to City</div>
+    <div class="transport-grid">
       {% for mode, info in transport.items() %}
       <div class="transport-block">
         <h4>{{ mode }}</h4>
-        <div class="duration">{{ info.duration }}</div>
-        <div style="color:#888;font-size:0.85rem;">{{ info.distance }}</div>
-        <ul class="steps">
-          {% for step in info.steps[:3] %}<li>{{ step }}</li>{% endfor %}
-        </ul>
+        <div class="dur">{{ info.duration }}</div>
+        <div class="dist">{{ info.distance }}</div>
+        <ul>{% for step in info.steps[:3] %}<li>{{ step }}</li>{% endfor %}</ul>
       </div>
       {% endfor %}
     </div>
   </div>
   {% endif %}
 
-  <!-- WEATHER -->
   {% if weather %}
   <div class="card">
-    <div class="card-title">🌤️ Weather</div>
+    <div class="card-title">Weather</div>
     <div class="weather-text">{{ weather }}</div>
   </div>
   {% endif %}
 
-  <!-- ADVISORY -->
   {% if advisory %}
   <div class="card">
-    <div class="card-title">🛡️ Travel Advisory</div>
-    <span class="badge badge-{{ advisory.level }}">{{ advisory.emoji }} Level {{ advisory.level }}: {{ advisory.text }}</span>
-    <div style="color:#888;font-size:0.8rem;margin-top:8px;">Updated {{ advisory.updated }}</div>
+    <div class="card-title">Travel Advisory</div>
+    <div class="advisory-banner advisory-{{ advisory.level }}">
+      <span class="advisory-emoji">{{ advisory.emoji }}</span>
+      <div>
+        <div class="advisory-text">Level {{ advisory.level }}: {{ advisory.text }}</div>
+        <div class="advisory-meta">Updated {{ advisory.updated }} &middot; <a href="{{ advisory.url }}" target="_blank" rel="noopener">Full advisory</a></div>
+      </div>
+    </div>
   </div>
   {% endif %}
 
-  <!-- EVENTS -->
   {% if events %}
   <div class="card">
-    <div class="card-title">🎟️ Events during your trip</div>
-    <ul class="events-list">
-      {% for e in events[:5] %}<li>{{ e.title }}</li>{% endfor %}
+    <div class="card-title">Events during your trip</div>
+    <ul class="list-items">
+      {% for e in events[:5] %}
+      <li>
+        <span class="item-title">{% if e.url %}<a href="{{ e.url }}" target="_blank" rel="noopener">{{ e.title }}</a>{% else %}{{ e.title }}{% endif %}</span>
+      </li>
+      {% endfor %}
     </ul>
   </div>
   {% endif %}
 
-  <!-- RESTAURANTS -->
   {% if restaurants %}
   <div class="card">
-    <div class="card-title">🍽️ Restaurants worth booking</div>
-    <ul class="restaurants-list">
-      {% for r in restaurants[:4] %}<li>{{ r.title }}</li>{% endfor %}
+    <div class="card-title">Restaurants worth booking</div>
+    <ul class="list-items">
+      {% for r in restaurants[:4] %}
+      <li>
+        <span class="item-title">{% if r.url %}<a href="{{ r.url }}" target="_blank" rel="noopener">{{ r.title }}</a>{% else %}{{ r.title }}{% endif %}</span>
+        <a class="action-link" href="https://www.opentable.com/s?term={{ r.title | urlencode }}" target="_blank" rel="noopener">Reserve</a>
+      </li>
+      {% endfor %}
     </ul>
   </div>
   {% endif %}
 
-  <!-- ITINERARY -->
   {% if itinerary %}
   <div class="card">
-    <div class="card-title">📍 Itinerary</div>
+    <div class="card-title">Itinerary</div>
     <div class="timeline">
       {% for day in itinerary %}
-      <div class="timeline-day" data-day="{{ day.day_num }}">
+      <div class="timeline-day">
+        <div class="day-circle">{{ day.day_num }}</div>
         <div class="day-header">
           <div class="day-date">{{ day.date }}</div>
           <div class="day-theme">{{ day.theme }}</div>
@@ -222,8 +284,8 @@
         {% for act in day.activities %}
         <div class="activity">
           <div class="activity-time">{{ act.time }}</div>
-          <div class="activity-name">{{ act.activity }}{% if act.duration %} <span style="color:#888;">({{ act.duration }})</span>{% endif %}</div>
-          {% if act.notes %}<div class="activity-meta">{{ act.notes }}</div>{% endif %}
+          <div class="activity-name">{{ act.activity }} {% if act.duration %}<span class="activity-dur">({{ act.duration }})</span>{% endif %}</div>
+          {% if act.notes %}<div class="activity-notes">{{ act.notes }}</div>{% endif %}
         </div>
         {% endfor %}
       </div>
@@ -232,22 +294,38 @@
   </div>
   {% endif %}
 
-  <!-- BUDGET -->
   <div class="card">
-    <div class="card-title">💰 Budget Estimate</div>
-    <table class="budget-table">
-      <tbody>
-        <tr><td>Flights</td><td>${{ "%.0f"|format(budget.flights) }}</td></tr>
-        <tr><td>Hotel {% if budget.hotel_details %}({{ budget.hotel_details }}){% endif %}</td><td>${{ "%.0f"|format(budget.hotel) }}</td></tr>
-        <tr><td>Ground transport (est.)</td><td>${{ "%.0f"|format(budget.transport) }}</td></tr>
-        <tr class="budget-total"><td>Total</td><td>${{ "%.0f"|format(budget.total) }}</td></tr>
-        {% if budget.budget %}<tr><td style="color:#888;">Your budget</td><td style="color:#888;">${{ "%.0f"|format(budget.budget) }}</td></tr>{% endif %}
-      </tbody>
-    </table>
+    <div class="card-title">Budget Estimate</div>
+    <div class="budget-rows">
+      <div class="budget-row">
+        <span class="label">Flights</span>
+        <span class="amount">${{ "%.0f"|format(budget.flights) }}</span>
+      </div>
+      <div class="budget-row">
+        <span class="label">Hotel <small>{{ budget.hotel_details }}</small></span>
+        <span class="amount">${{ "%.0f"|format(budget.hotel) }}</span>
+      </div>
+      <div class="budget-row">
+        <span class="label">Ground transport (est.)</span>
+        <span class="amount">${{ "%.0f"|format(budget.transport) }}</span>
+      </div>
+      <div class="budget-row total">
+        <span class="label">Total</span>
+        <span class="amount">${{ "%.0f"|format(budget.total) }}</span>
+      </div>
+      {% if budget.budget %}
+      <div class="budget-row">
+        <span class="label" style="color:#64748b;">Your budget</span>
+        <span class="amount" style="color:#64748b;">${{ "%.0f"|format(budget.budget) }}</span>
+      </div>
+      {% endif %}
+    </div>
   </div>
 
-  <div style="text-align:center;color:#444;font-size:0.75rem;margin-top:32px;padding-top:16px;border-top:1px solid #1e2130;">
-    Generated by <a href="https://github.com/a692570/triply" style="color:#7c9ef5;text-decoration:none;">triply</a> · Prices are estimates, verify before booking
+  <div class="footer">
+    Generated by <a href="https://github.com/a692570/triply">triply</a>
+    {% if generated_at %} on {{ generated_at }}{% endif %}
+    &middot; Prices are estimates, verify before booking
   </div>
 
 </div>
